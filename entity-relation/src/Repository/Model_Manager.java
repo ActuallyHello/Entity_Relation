@@ -1,21 +1,20 @@
 package Repository;
 
 import model.Model;
-import model.Student;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class ModelDAO implements Repos<Model> {
+public class Model_Manager implements Repos<Model> {
 
 
     private static final String DB_USERNAME = "postgres";
     private static final String DB_PASSWORD = "admin";
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/card_game";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/erdb";
 
     private static Connection connection;
 
-    public ModelDAO() {
+    public Model_Manager() {
         try {
             connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
         } catch (SQLException throwables) {
@@ -35,7 +34,7 @@ public class ModelDAO implements Repos<Model> {
 
             Model model;
             while(rs.next()) {
-                model = new Model(rs.getLong(""),rs.getString("") , rs.getLong(""));
+                model = new Model(rs.getInt(""),rs.getString(""), rs.getString(""));
                 modelList.add(model);
             }
         } catch(SQLException throwables) {
@@ -46,9 +45,13 @@ public class ModelDAO implements Repos<Model> {
     }
 
     @Override
-    public Model getByKey(String key) {
+    public Model getByKey(String key, String where) {
         Model model = null;
+
         String query = "";
+
+        if (where == "byId") query = "";
+        else if (where == "byName") query = "";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -58,7 +61,7 @@ public class ModelDAO implements Repos<Model> {
 
             rs.next();
 
-            model = new Model(rs.getLong(""),rs.getString("") , rs.getLong(""));
+            model = new Model(rs.getInt(""),rs.getString("") , rs.getString(""));
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -69,13 +72,13 @@ public class ModelDAO implements Repos<Model> {
 
     @Override
     public void add_node(Model node) {
-        String query = "";
+        String query = "INSERT INTO model (id_m, name_m, id_s) VALUES (?, ?, ?)";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setLong(1, node.getId_M());
+            preparedStatement.setInt(1, node.getId_M());
             preparedStatement.setString(2, node.getName_M());
-            preparedStatement.setLong(3, node.getId_BE());
+            preparedStatement.setString(3, node.getId_S());
 
             preparedStatement.executeUpdate();
 
@@ -105,9 +108,9 @@ public class ModelDAO implements Repos<Model> {
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setLong(1, new_node.getId_M());
+            preparedStatement.setInt(1, new_node.getId_M());
             preparedStatement.setString(2, new_node.getName_M());
-            preparedStatement.setLong(3, new_node.getId_BE());
+            preparedStatement.setString(3, new_node.getId_S());
             preparedStatement.setString(4, key);
 
             preparedStatement.executeUpdate();
@@ -115,5 +118,39 @@ public class ModelDAO implements Repos<Model> {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    @Override
+    public Integer max_id() {
+        String query = "SELECT MAX(id_m) FROM model LIMIT 1";
+        Integer max = 0;
+
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            rs.next();
+
+            max = rs.getInt("");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        if (max == null) {
+            max = 0;
+        }
+
+        return max;
+    }
+
+    public ArrayList<String> name_from_bd(ArrayList<Model> list) {
+
+        ArrayList<String> names = new ArrayList<>();
+
+        for (Model m: list) {
+            names.add(m.getId_M() + " - " + m.getName_M());
+        }
+
+        return names;
     }
 }

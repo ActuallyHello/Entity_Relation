@@ -1,21 +1,21 @@
 package Repository;
 
+import model.Between_relation;
 import model.Entity;
-import model.Entity_Attribute;
 import model.Model;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Entity_AttributeDAO implements Repos<Entity_Attribute> {
+public class Entity_Manager implements Repos<Entity> {
 
     private static final String DB_USERNAME = "postgres";
     private static final String DB_PASSWORD = "admin";
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/er_db";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/erdb";
 
     private static Connection connection;
 
-    public Entity_AttributeDAO() {
+    public Entity_Manager() {
         try {
             connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
         } catch (SQLException throwables) {
@@ -24,8 +24,8 @@ public class Entity_AttributeDAO implements Repos<Entity_Attribute> {
     }
 
     @Override
-    public ArrayList<Entity_Attribute> getAll() {
-        ArrayList<Entity_Attribute> entity_attributeList = new ArrayList<>();
+    public ArrayList<Entity> getAll() {
+        ArrayList<Entity> entityList = new ArrayList<>();
 
         String query = "SELECT ";
 
@@ -33,22 +33,26 @@ public class Entity_AttributeDAO implements Repos<Entity_Attribute> {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(query);
 
-            Entity_Attribute entity_attribute;
+            Entity entity;
             while(rs.next()) {
-                entity_attribute = new Entity_Attribute(rs.getLong(""),rs.getString("") , rs.getLong(""));
-                entity_attributeList.add(entity_attribute);
+                entity = new Entity(rs.getInt("id_e"),rs.getString("name_e"));
+                entityList.add(entity);
             }
         } catch(SQLException throwables) {
             throwables.printStackTrace();
         }
 
-        return entity_attributeList;
+        return entityList;
     }
 
     @Override
-    public Entity_Attribute getByKey(String key) {
-        Entity_Attribute entity_attribute = null;
+    public Entity getByKey(String key, String where) {
+        Entity entity = null;
+
         String query = "";
+
+        if (where == "byId") query = "";
+        else if (where == "byName") query = "";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -58,24 +62,23 @@ public class Entity_AttributeDAO implements Repos<Entity_Attribute> {
 
             rs.next();
 
-            entity_attribute = new Entity_Attribute(rs.getLong(""),rs.getString(""), rs.getLong(""));
+            entity = new Entity(rs.getInt("id_e"),rs.getString("name_e"));
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
 
-        return entity_attribute;
+        return entity;
     }
 
     @Override
-    public void add_node(Entity_Attribute node) {
-        String query = "";
+    public void add_node(Entity node) {
+        String query = "INSERT INTO entity (id_e, name_e) VALUES (?, ?)";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setLong(1, node.getId_EA());
-            preparedStatement.setString(2, node.getName_EA());
-            preparedStatement.setLong(3, node.getId_E());
+            preparedStatement.setInt(1, node.getId_E());
+            preparedStatement.setString(2, node.getName_E());
 
             preparedStatement.executeUpdate();
 
@@ -100,20 +103,53 @@ public class Entity_AttributeDAO implements Repos<Entity_Attribute> {
     }
 
     @Override
-    public void update(String key, Entity_Attribute new_node) {
+    public void update(String key, Entity new_node) {
         String query = "";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setLong(1, new_node.getId_EA());
-            preparedStatement.setString(2, new_node.getName_EA());
-            preparedStatement.setLong(3, new_node.getId_E());
-            preparedStatement.setString(4, key);
+            preparedStatement.setInt(1, new_node.getId_E());
+            preparedStatement.setString(2, new_node.getName_E());
+            preparedStatement.setString(3, key);
 
             preparedStatement.executeUpdate();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    @Override
+    public Integer max_id() {
+        String query = "SELECT MAX(id_e) as max_id FROM entity LIMIT 1";
+        Integer max = 0;
+
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            rs.next();
+
+            max = rs.getInt("max_id");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        if (max == null) {
+            max = 0;
+        }
+
+        return max;
+    }
+
+    public ArrayList<String> name_from_db(ArrayList<Entity> list) {
+
+        ArrayList<String> names = new ArrayList<>();
+
+        for (Entity e: list) {
+            names.add(e.getId_E() + " - " + e.getName_E());
+        }
+
+        return names;
     }
 }
