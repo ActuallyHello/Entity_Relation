@@ -26,7 +26,8 @@ public class Model_Manager implements Repos<Model> {
     public ArrayList<Model> getAll() {
         ArrayList<Model> modelList = new ArrayList<>();
 
-        String query = "SELECT ";
+        String query = "SELECT id_m as id, name_m as name, id_s as id_student " +
+                       "FROM model;";
 
         try {
             Statement st = connection.createStatement();
@@ -34,7 +35,9 @@ public class Model_Manager implements Repos<Model> {
 
             Model model;
             while(rs.next()) {
-                model = new Model(rs.getInt(""),rs.getString(""), rs.getString(""));
+                model = new Model(rs.getInt("id"),
+                                  rs.getString("name"),
+                                  rs.getString("id_student"));
                 modelList.add(model);
             }
         } catch(SQLException throwables) {
@@ -50,18 +53,36 @@ public class Model_Manager implements Repos<Model> {
 
         String query = "";
 
-        if (where == "byId") query = "";
-        else if (where == "byName") query = "";
-
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, key);
+
+            PreparedStatement preparedStatement;
+
+            if (where == "byId") {
+                int id = Integer.parseInt(key);
+                query = "SELECT id_m as id, name_m as name, id_s as id_student " +
+                        "FROM model " +
+                        "WHERE id_m=?;";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, id);
+            }
+            else { // if (where == "byName")
+                query = "SELECT id_m as id, name_m as name, id_s as id_student " +
+                        "FROM model " +
+                        "WHERE name_m=? " +
+                        "ORDER BY id_m DESC " +
+                        "LIMIT 1;";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, key);
+            }
+
 
             ResultSet rs = preparedStatement.executeQuery();
 
             rs.next();
 
-            model = new Model(rs.getInt(""),rs.getString("") , rs.getString(""));
+            model = new Model(rs.getInt("id"),
+                              rs.getString("name"),
+                              rs.getString("id_student"));
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -72,7 +93,7 @@ public class Model_Manager implements Repos<Model> {
 
     @Override
     public void add_node(Model node) {
-        String query = "INSERT INTO model (id_m, name_m, id_s) VALUES (?, ?, ?)";
+        String query = "INSERT INTO model (id_m, name_m, id_s) VALUES (?, ?, ?);";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -89,7 +110,8 @@ public class Model_Manager implements Repos<Model> {
 
     @Override
     public void delete_node(String key) {
-        String query = "";
+        String query = "DELETE FROM model " +
+                       "WHERE id_m=?;";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -104,7 +126,9 @@ public class Model_Manager implements Repos<Model> {
 
     @Override
     public void update(String key, Model new_node) {
-        String query = "";
+        String query = "UPDATE model " +
+                       "SET id_m=?, name_m=?, id_s=? " +
+                       "WHERE id_m=?;";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -122,7 +146,7 @@ public class Model_Manager implements Repos<Model> {
 
     @Override
     public Integer max_id() {
-        String query = "SELECT MAX(id_m) FROM model LIMIT 1";
+        String query = "SELECT MAX(id_m) as max_id FROM model LIMIT 1;";
         Integer max = 0;
 
         try {
@@ -131,7 +155,7 @@ public class Model_Manager implements Repos<Model> {
 
             rs.next();
 
-            max = rs.getInt("");
+            max = rs.getInt("max_id");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -143,14 +167,4 @@ public class Model_Manager implements Repos<Model> {
         return max;
     }
 
-    public ArrayList<String> name_from_bd(ArrayList<Model> list) {
-
-        ArrayList<String> names = new ArrayList<>();
-
-        for (Model m: list) {
-            names.add(m.getId_M() + " - " + m.getName_M());
-        }
-
-        return names;
-    }
 }

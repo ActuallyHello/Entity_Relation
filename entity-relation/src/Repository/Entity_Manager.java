@@ -27,7 +27,8 @@ public class Entity_Manager implements Repos<Entity> {
     public ArrayList<Entity> getAll() {
         ArrayList<Entity> entityList = new ArrayList<>();
 
-        String query = "SELECT ";
+        String query = "SELECT id_e as id, name_e as name " +
+                       "FROM entity;";
 
         try {
             Statement st = connection.createStatement();
@@ -35,7 +36,8 @@ public class Entity_Manager implements Repos<Entity> {
 
             Entity entity;
             while(rs.next()) {
-                entity = new Entity(rs.getInt("id_e"),rs.getString("name_e"));
+                entity = new Entity(rs.getInt("id"),
+                                    rs.getString("name"));
                 entityList.add(entity);
             }
         } catch(SQLException throwables) {
@@ -51,29 +53,45 @@ public class Entity_Manager implements Repos<Entity> {
 
         String query = "";
 
-        if (where == "byId") query = "";
-        else if (where == "byName") query = "";
-
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, key);
 
-            ResultSet rs = preparedStatement.executeQuery();
+            PreparedStatement preparedStatement;
 
-            rs.next();
+            if (where == "byId") {
+                int id = Integer.parseInt(key);
+                query = "SELECT id_e as id, name_e as name " +
+                        "FROM entity " +
+                        "WHERE id_e=?;";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, id);
+            }
+            else { // if (where == "byName")
+                query = "SELECT id_e as id, name_e as name " +
+                        "FROM entity " +
+                        "WHERE name_e=? " +
+                        "ORDER BY id_e DESC " +
+                        "LIMIT 1;";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, key);
+            }
 
-            entity = new Entity(rs.getInt("id_e"),rs.getString("name_e"));
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                rs.next();
+                entity = new Entity(rs.getInt("id"),
+                                    rs.getString("name"));
+            }
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
 
         return entity;
+
     }
 
     @Override
     public void add_node(Entity node) {
-        String query = "INSERT INTO entity (id_e, name_e) VALUES (?, ?)";
+        String query = "INSERT INTO entity (id_e, name_e) VALUES (?, ?);";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -89,7 +107,8 @@ public class Entity_Manager implements Repos<Entity> {
 
     @Override
     public void delete_node(String key) {
-        String query = "";
+        String query = "DELETE FROM entity " +
+                       "WHERE id_e=?;";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -104,7 +123,9 @@ public class Entity_Manager implements Repos<Entity> {
 
     @Override
     public void update(String key, Entity new_node) {
-        String query = "";
+        String query = "UPDATE entity " +
+                       "SET id_e=?, name_e=? " +
+                       "WHERE id_e=?;";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -121,7 +142,7 @@ public class Entity_Manager implements Repos<Entity> {
 
     @Override
     public Integer max_id() {
-        String query = "SELECT MAX(id_e) as max_id FROM entity LIMIT 1";
+        String query = "SELECT MAX(id_e) as max_id FROM entity LIMIT 1;";
         Integer max = 0;
 
         try {
@@ -140,16 +161,5 @@ public class Entity_Manager implements Repos<Entity> {
         }
 
         return max;
-    }
-
-    public ArrayList<String> name_from_db(ArrayList<Entity> list) {
-
-        ArrayList<String> names = new ArrayList<>();
-
-        for (Entity e: list) {
-            names.add(e.getId_E() + " - " + e.getName_E());
-        }
-
-        return names;
     }
 }

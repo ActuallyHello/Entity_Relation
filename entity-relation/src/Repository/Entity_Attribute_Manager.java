@@ -11,7 +11,7 @@ public class Entity_Attribute_Manager implements Repos<Entity_Attribute> {
 
     private static final String DB_USERNAME = "postgres";
     private static final String DB_PASSWORD = "admin";
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/er_db";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/erdb";
 
     private static Connection connection;
 
@@ -27,7 +27,8 @@ public class Entity_Attribute_Manager implements Repos<Entity_Attribute> {
     public ArrayList<Entity_Attribute> getAll() {
         ArrayList<Entity_Attribute> entity_attributeList = new ArrayList<>();
 
-        String query = "SELECT ";
+        String query = "SELECT id_ea as id, name_ea as name, id_e as id_entity as model " +
+                       "FROM entity_attribute;";
 
         try {
             Statement st = connection.createStatement();
@@ -35,7 +36,9 @@ public class Entity_Attribute_Manager implements Repos<Entity_Attribute> {
 
             Entity_Attribute entity_attribute;
             while(rs.next()) {
-                entity_attribute = new Entity_Attribute(rs.getInt(""),rs.getString("") , rs.getInt(""));
+                entity_attribute = new Entity_Attribute(rs.getInt("id"),
+                                                        rs.getString("name"),
+                                                        rs.getInt("id_entity"));
                 entity_attributeList.add(entity_attribute);
             }
         } catch(SQLException throwables) {
@@ -51,18 +54,34 @@ public class Entity_Attribute_Manager implements Repos<Entity_Attribute> {
 
         String query = "";
 
-        if (where == "byId") query = "";
-        else if (where == "byName") query = "SELECT name_ea from entity_attribute where id_ea = SELECT MAX(id_ea) FROM entity_attribute";
+        PreparedStatement preparedStatement;
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, key);
+            if (where == "byId") {
+                int id = Integer.parseInt(key);
+                query = "SELECT id_ea as id, name_ea as name, id_e as id_entity " +
+                        "FROM entity_attribute " +
+                        "WHERE id_ea=?;";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, id);
+            }
+            else { // if (where == "byName")
+                query = "SELECT id_ea as id, name_ea as name, id_e as id_entity " +
+                        "FROM entity_attribute " +
+                        "WHERE name_ea=? " +
+                        "ORDER BY id_ea DESC " +
+                        "LIMIT 1;";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, key);
+            }
 
             ResultSet rs = preparedStatement.executeQuery();
 
             rs.next();
 
-            entity_attribute = new Entity_Attribute(rs.getInt(""),rs.getString(""), rs.getInt(""));
+            entity_attribute = new Entity_Attribute(rs.getInt("id"),
+                                                    rs.getString("name"),
+                                                    rs.getInt("id_entity"));
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -73,7 +92,7 @@ public class Entity_Attribute_Manager implements Repos<Entity_Attribute> {
 
     @Override
     public void add_node(Entity_Attribute node) {
-        String query = "INSERT INTO entity_attribute (id_ea, name_ea, id_e) VALUES (?, ?, ?)";
+        String query = "INSERT INTO entity_attribute (id_ea, name_ea, id_e) VALUES (?, ?, ?);";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -90,11 +109,13 @@ public class Entity_Attribute_Manager implements Repos<Entity_Attribute> {
 
     @Override
     public void delete_node(String key) {
-        String query = "";
+        String query = "DELETE FROM entity_attribute " +
+                       "WHERE id_ea=?;";
 
         try {
+            int id = Integer.parseInt(key);
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, key);
+            preparedStatement.setInt(1, id);
 
             preparedStatement.executeUpdate();
 
@@ -105,7 +126,9 @@ public class Entity_Attribute_Manager implements Repos<Entity_Attribute> {
 
     @Override
     public void update(String key, Entity_Attribute new_node) {
-        String query = "";
+        String query = "UPDATE entity_attribute " +
+                       "SET id_ea=?, name_ea=?, id_e=? " +
+                       "WHERE id_ea=?;";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -123,7 +146,7 @@ public class Entity_Attribute_Manager implements Repos<Entity_Attribute> {
 
     @Override
     public Integer max_id() {
-        String query = "SELECT MAX(id_ea) FROM entity_attribute LIMIT 1";
+        String query = "SELECT MAX(id_ea) as max_id FROM entity_attribute LIMIT 1;";
         Integer max = 0;
 
         try {
@@ -132,7 +155,7 @@ public class Entity_Attribute_Manager implements Repos<Entity_Attribute> {
 
             rs.next();
 
-            max = rs.getInt("");
+            max = rs.getInt("max_id");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

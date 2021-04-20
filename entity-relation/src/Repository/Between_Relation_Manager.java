@@ -1,7 +1,6 @@
 package Repository;
 
 import model.Between_relation;
-import model.Model;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -27,7 +26,8 @@ public class Between_Relation_Manager implements Repos<Between_relation> {
     public ArrayList<Between_relation> getAll() {
         ArrayList<Between_relation> between_relations = new ArrayList<>();
 
-        String query = "SELECT ";
+        String query = "SELECT id_be as id, name_be as name, power_be as power, id_e_left as left, id_e_right as right, id_m as model " +
+                       "FROM between_entity;";
 
         try {
             Statement st = connection.createStatement();
@@ -35,8 +35,12 @@ public class Between_Relation_Manager implements Repos<Between_relation> {
 
             Between_relation between_relation;
             while(rs.next()) {
-                between_relation = new Between_relation(rs.getInt(""), rs.getString(""),
-                                        rs.getString(""), rs.getInt(""), rs.getInt(""), rs.getInt(""));
+                between_relation = new Between_relation(rs.getInt("id"),
+                                                        rs.getString("name"),
+                                                        rs.getString("power"),
+                                                        rs.getInt("left"),
+                                                        rs.getInt("right"),
+                                                        rs.getInt("model"));
                 between_relations.add(between_relation);
             }
         } catch(SQLException throwables) {
@@ -52,19 +56,39 @@ public class Between_Relation_Manager implements Repos<Between_relation> {
 
         String query = "";
 
-        if (where == "byId") query = "";
-        else if (where == "byName") query = "";
-
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, key);
+
+            PreparedStatement preparedStatement;
+
+            if (where == "byId") {
+                int id = Integer.parseInt(key);
+                query = "SELECT id_be as id, name_be as name, power_be as power, id_e_left as left, id_e_right as right, id_m as model " +
+                        "FROM between_entity " +
+                        "WHERE id_be=?;";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, id);
+            }
+            else { // if (where == "byName")
+                query = "SELECT id_be as id, name_be as name, power_be as power, id_e_left as left, id_e_right as right, id_m as model " +
+                        "FROM between_entity " +
+                        "WHERE name_be=? " +
+                        "ORDER BY id_be DESC " +
+                        "LIMIT 1;";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, key);
+            }
+
 
             ResultSet rs = preparedStatement.executeQuery();
 
             rs.next();
 
-            between_relation = new Between_relation(rs.getInt(""), rs.getString(""),
-                                rs.getString(""), rs.getInt(""), rs.getInt(""), rs.getInt(""));
+            between_relation = new Between_relation(rs.getInt("id"),
+                                                    rs.getString("name"),
+                                                    rs.getString("power"),
+                                                    rs.getInt("left"),
+                                                    rs.getInt("right"),
+                                                    rs.getInt("model"));
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -74,7 +98,7 @@ public class Between_Relation_Manager implements Repos<Between_relation> {
 
     @Override
     public void add_node(Between_relation node) {
-        String query = "INSERT INTO between_relation (id_be, name_be, power_be, id_e_left, id_e_right, id_m) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO between_entity (id_be, name_be, power_be, id_e_left, id_e_right, id_m) VALUES (?, ?, ?, ?, ?, ?);";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -94,11 +118,13 @@ public class Between_Relation_Manager implements Repos<Between_relation> {
 
     @Override
     public void delete_node(String key) {
-        String query = "";
+        String query = "DELETE FROM between_entity " +
+                       "WHERE id_be=?";
 
         try {
+            int id = Integer.parseInt(key);
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, key);
+            preparedStatement.setInt(1, id);
 
             preparedStatement.executeUpdate();
 
@@ -109,7 +135,9 @@ public class Between_Relation_Manager implements Repos<Between_relation> {
 
     @Override
     public void update(String key, Between_relation new_node) {
-        String query = "";
+        String query = "UPDATE between_entity " +
+                       "SET id_be=?, name_be=?, power_be=?, id_e_left=?, id_e_right=?, id_m=? " +
+                       "WHERE id_be=?";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -130,7 +158,7 @@ public class Between_Relation_Manager implements Repos<Between_relation> {
 
     @Override
     public Integer max_id() {
-        String query = "SELECT MAX(id_be) FROM between_entity LIMIT 1";
+        String query = "SELECT MAX(id_be) as max_id FROM between_entity LIMIT 1;";
         Integer max = 0;
 
         try {
@@ -139,7 +167,7 @@ public class Between_Relation_Manager implements Repos<Between_relation> {
 
             rs.next();
 
-            max = rs.getInt("");
+            max = rs.getInt("max_id");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -149,16 +177,5 @@ public class Between_Relation_Manager implements Repos<Between_relation> {
         }
 
         return max;
-    }
-
-    public ArrayList<String> name_from_bd(ArrayList<Between_relation> list) {
-
-        ArrayList<String> names = new ArrayList<>();
-
-        for (Between_relation br: list) {
-            names.add(br.getId_BE() + " - " + br.getName_BE());
-        }
-
-        return names;
     }
 }

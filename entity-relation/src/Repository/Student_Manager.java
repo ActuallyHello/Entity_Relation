@@ -27,7 +27,8 @@ public class Student_Manager implements Repos<Student> {
     public ArrayList<Student> getAll() {
         ArrayList<Student> studentList = new ArrayList<>();
 
-        String query = "SELECT ";
+        String query = "SELECT id_s as id, fname as first, lname as last, mname as mid, name_group as group " +
+                       "FROM student;";
 
         try {
             Statement st = connection.createStatement();
@@ -35,8 +36,11 @@ public class Student_Manager implements Repos<Student> {
 
             Student student;
             while(rs.next()) {
-                student = new Student(rs.getString(""),rs.getString("") , rs.getString(""),
-                            rs.getString(""), rs.getString(""));
+                student = new Student(rs.getString("id"),
+                                      rs.getString("first"),
+                                      rs.getString("last"),
+                                      rs.getString("mid"),
+                                      rs.getString("name_group"));
                 studentList.add(student);
             }
         } catch(SQLException throwables) {
@@ -52,19 +56,38 @@ public class Student_Manager implements Repos<Student> {
 
         String query = "";
 
-        if (where == "byId") query = "";
-        else if (where == "byName") query = "";
-
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, key);
+
+            PreparedStatement preparedStatement;
+
+            if (where == "byId") {
+                int id = Integer.parseInt(key);
+                query = "SELECT id_s as id, fname as first, lname as last, mname as mid, name_group as group " +
+                        "FROM student " +
+                        "WHERE id_s=?;";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, id);
+            }
+            else { // if (where == "byName")
+                query = "SELECT id_s as id, fname as first, lname as last, mname as mid, name_group as group " +
+                        "FROM student " +
+                        "WHERE lname=? " +
+                        "ORDER BY id_s DESC " +
+                        "LIMIT 1;";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, key);
+            }
+
 
             ResultSet rs = preparedStatement.executeQuery();
 
             rs.next();
 
-            student = new Student(rs.getString(""),rs.getString("") , rs.getString(""),
-                                        rs.getString(""), rs.getString(""));
+            student = new Student(rs.getString("id"),
+                                  rs.getString("first"),
+                                  rs.getString("last"),
+                                  rs.getString("mid"),
+                                  rs.getString("name_group"));
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -74,7 +97,7 @@ public class Student_Manager implements Repos<Student> {
 
     @Override
     public void add_node(Student node) {
-        String query = "INSERT INTO student (id_S, fname, lname, mname, name_group) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO student (id_S, fname, lname, mname, name_group) VALUES (?, ?, ?, ?, ?);";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -94,7 +117,8 @@ public class Student_Manager implements Repos<Student> {
 
     @Override
     public void delete_node(String key) {
-        String query = "";
+        String query = "DELETE FROM student " +
+                       "WHERE id_s=?";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -110,7 +134,9 @@ public class Student_Manager implements Repos<Student> {
 
     @Override
     public void update(String key, Student new_node) {
-        String query = "";
+        String query = "UPDATE student " +
+                       "SET id_s=?, fname=?, lname=?, mname=?, name_group=? " +
+                       "WHERE id_s=?;";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -131,7 +157,7 @@ public class Student_Manager implements Repos<Student> {
 
     @Override
     public Integer max_id() {
-        String query = "SELECT MAX(id_s) FROM between_entity LIMIT 1";
+        String query = "SELECT MAX(id_s) as max_id FROM between_entity LIMIT 1;";
         Integer max = 0;
 
         try {
@@ -140,7 +166,7 @@ public class Student_Manager implements Repos<Student> {
 
             rs.next();
 
-            max = rs.getInt("");
+            max = rs.getInt("max_id");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -150,32 +176,5 @@ public class Student_Manager implements Repos<Student> {
         }
 
         return max;
-    }
-
-
-    public ArrayList<String> name_from_db(ArrayList<Student> list) {
-
-        ArrayList<String> names = new ArrayList<>();
-
-        for (Student s: list) {
-            names.add(s.getId_S());
-        }
-
-        return names;
-    }
-
-    public ArrayList<String> name_from_bd(ArrayList<Student> list) {
-
-        ArrayList<String> names = new ArrayList<>();
-
-        for (Student s: list) {
-            names.add(s.getId_S() + "; "
-                      + s.getFname() + "; "
-                      + s.getLname() + "; "
-                      + s.getMname() + "; "
-                      + s.getName_group());
-        }
-
-        return names;
     }
 }
