@@ -6,6 +6,6 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.mainController">
    <children>
       <Button layoutX="145.0" layoutY="175.0" mnemonicParsing="false" onAction="#bAddModel" text="Добавить" />
-      <Button layoutX="365.0" layoutY="175.0" mnemonicParsing="false" text="Запросы" />
+      <Button layoutX="365.0" layoutY="175.0" mnemonicParsing="false" onAction="#bAddQuery" text="Запросы" />
    </children>
 </AnchorPane>

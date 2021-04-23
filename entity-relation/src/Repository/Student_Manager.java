@@ -40,7 +40,7 @@ public class Student_Manager implements Repos<Student> {
                                       rs.getString("first"),
                                       rs.getString("last"),
                                       rs.getString("mid"),
-                                      rs.getString("name_group"));
+                                      rs.getString("group"));
                 studentList.add(student);
             }
         } catch(SQLException throwables) {

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="506.0" prefWidth="810.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.QueryController">
+   <children>
+      <Label layoutX="28.0" layoutY="18.0" text="Выберите параметр" />
+      <Button layoutX="78.0" layoutY="264.0" mnemonicParsing="false" text="Найти" />
+      <ChoiceBox fx:id="chbParametr" layoutX="29.0" layoutY="39.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="chbData" layoutX="29.0" layoutY="110.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="chbCondition" layoutX="29.0" layoutY="185.0" prefWidth="150.0" />
+      <Label layoutX="27.0" layoutY="90.0" text="Данные" />
+      <Label layoutX="27.0" layoutY="168.0" text="Условие поиска" />
+      <TableView fx:id="tvOutput" layoutX="205.0" layoutY="36.0" prefHeight="446.0" prefWidth="564.0">
+        <columns>
+          <TableColumn fx:id="tc1" prefWidth="75.0" />
+          <TableColumn fx:id="tc2" prefWidth="75.0" />
+            <TableColumn fx:id="tc3" prefWidth="75.0" />
+            <TableColumn fx:id="tc4" prefWidth="75.0" />
+            <TableColumn fx:id="tc5" prefWidth="75.0" />
+        </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+   </children>
+</AnchorPane>
