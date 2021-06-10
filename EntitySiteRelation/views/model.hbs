@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/model" method="POST">
+        
+        <label for="select_act"> Выберите действие:</label>
+        <select name="act" id="select_act">
+            <option value="add">Добавить модель</option>
+            <option value="edit">Редактировать модель</option>
+            <option value="delete">Удалить модель</option>
+        </select>
+        
+        {{#if add}}
+            {{#if s}}
+            <br>
+            <label for="select_student"> Выберите студента:</label>        
+            <select name="student" id="select_student">
+                {{#each s}}
+                <option value="{{this.id_s}}">{{this.id_s}} {{this.lname}} {{this.group_name}}</option>
+                {{/each}}
+            </select>
+            {{/if}}
+            
+            <input id="model" name="model_name" placeholder="Название модели">
+            <button>OK</button>
+        {{/if}}
+
+        {{#if edit}}
+            {{#if s}}
+            <br>
+            <label for="select_student"> Выберите студента:</label>        
+            <select name="student" id="select_student">
+                {{#each s}}
+                <option value="{{this.id_s}}">{{this.id_s}} {{this.lname}} {{this.group_name}}</option>
+                {{/each}}
+            </select>
+            {{/if}}
+
+            {{#if m}}
+            <br>
+            <label for="select_model"> Выберите модель:</label>
+            
+            <select name="model" id="select_model">
+                {{#each m}}
+                <option value="{{this.id_m}}">{{this.name_m}} {{this.id_s}}</option>
+                {{/each}}
+            </select>
+            {{/if}}
+
+            <input id="model" name="model_name" placeholder="Название модели">
+            <button>OK</button>
+        {{/if}}
+
+        {{#if delete}}
+            {{#if m}}
+            <br>
+            <label for="select_model"> Выберите модель:</label>
+            
+            <select name="model" id="select_model">
+                {{#each m}}
+                <option value="{{this.id_m}}">{{this.name_m}} {{this.id_s}}</option>
+                {{/each}}
+            </select>
+            {{/if}}
+            <button>OK</button>
+        {{/if}}
+    </form>
+
+</body>
+</html>

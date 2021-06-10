@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <form action="/relation" method="POST">
+        <label for="select_act"> Выберите действие:</label>
+        <select name="act" id="select_act">
+            <option value="add">Добавить связь</option>
+            <option value="edit">Редактировать связь</option>
+            <option value="delete">Удалить связь</option>
+        </select>
+
+        {{#if add}}
+            <input id="relation" name="name_relation" placeholder="Название связи">
+            
+            {{#if e}}
+            <br>
+            <label for="select_right"> Выберите правую сущность:</label>
+            
+            <select name="relation" id="select_right">
+                {{#each e}}
+                <option value="{{this.id_e}}">{{this.name_e}}</option>
+                {{/each}}
+            </select>
+            {{/if}}
+
+            <br>
+            <label for="select_student"> Выберите левую сущность:</label>
+            
+            <select name="student" id="select_student">
+                <option value="1_1"> 1-1 </option>
+                <option value="1_N"> 1-N </option>
+                <option value="N_1"> N-1 </option>
+                <option value="N_N"> N-N </option>
+            </select>
+
+
+            {{#if e}}
+            <br>
+            <label for="select_right"> Выберите правую сущность:</label>
+            
+            <select name="relation" id="select_right">
+                {{#each e}}
+                <option value="{{this.id_e}}">{{this.name_e}}</option>
+                {{/each}}
+            </select>
+            {{/if}}
+
+            <br>
+            
+            {{#if m}}
+            <br>
+            <label for="select_model"> Выберите модель:</label>
+            
+            <select name="relation" id="select_model">
+                {{#each m}}
+                <option value="{{this.id_m}}">{{this.name_m}}</option>
+                {{/each}}
+            </select>
+            {{/if}}
+
+            <button>OK</button>
+            {{/if}}
+
+        {{#if edit}}
+            <!-- ВСТАВИТЬ ИЗ VIEW -->
+            {{#if be}}
+            <br>
+            <label for="select_model"> Выберите модель:</label>
+            
+            <select name="relation" id="select_model">
+                {{#each be}}
+                <option value="{{this.id_be}}">{{this.name_be}} {{}}</option>
+                {{/each}}
+            </select>
+            {{/if}}
+
+            <button>OK</button>
+            
+        {{/if}}
+
+
+        {{#if delete}}
+        
+        {{/if}}
+        
+    </form>
+
+</body>
+</html>

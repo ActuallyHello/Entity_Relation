@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/student" method="POST">
+        <label for="select_act"> Выберите действие:</label>
+        <select name="act" id="select_act">
+            <option value="add">Добавить</option>
+            <option value="edit">Редактировать</option>
+            <option value="delete">Удалить</option>
+        </select>
+
+        {{#if add}}
+            <input id="student" name="id_s" placeholder="Зачётка">
+            <input id="student" name="fname" placeholder="Имя">
+            <input id="student" name="lname" placeholder="Фамилия">
+            <input id="student" name="mname" placeholder="Отчество">
+            <input id="student" name="group_name" placeholder="Группа">
+            <button>OK</button>
+        {{/if}}
+
+        {{#if edit}}
+            {{#if s}}
+            <br>
+            <label for="select_student"> Выберите студента:</label>
+            
+            <select name="student" id="select_student">
+                {{#each s}}
+                <option value="{{this.id_s}}">{{this.id_s}} {{this.lname}} {{this.group_name}}</option>
+                {{/each}}
+            </select>
+            {{/if}}
+
+
+            <input id="student" name="id_s" placeholder="Зачётка">
+            <input id="student" name="fname" placeholder="Имя">
+            <input id="student" name="lname" placeholder="Фамилия">
+            <input id="student" name="mname" placeholder="Отчество">
+            <input id="student" name="group_name" placeholder="Группа">
+            <button>OK</button>
+        {{/if}}
+
+
+        {{#if delete}}
+            {{#if s}}
+            <br>
+            <label for="select_student"> Выберите студента:</label>
+            
+            <select name="student" id="select_student">
+                {{#each s}}
+                <option value="{{this.id_s}}">{{this.id_s}} {{this.lname}} {{this.group_name}}</option>
+                {{/each}}
+            </select>
+            {{/if}}
+            <button>OK</button>
+        {{/if}}
+        
+        
+        <input id="student" name="id_s" placeholder="Зачётка">
+        <input id="student" name="fname" placeholder="Имя">
+        <input id="student" name="lname" placeholder="Фамилия">
+        <input id="student" name="mname" placeholder="Отчество">
+        <input id="student" name="group_name" placeholder="Группа">
+        <button>OK</button>
+    </form>
+
+</body>
+</html>

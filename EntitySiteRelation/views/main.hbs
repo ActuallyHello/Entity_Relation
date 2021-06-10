@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+</head>
+<body>
+    <!--<h1>{{a}}</h1>-->
+    <a href='/entity_attribute'>Сущность атрибут</a>
+    <a href='/model'>Модель</a>
+    <a href='/relation'>Связь</a>
+    <a href='/student'>Студент</a>
+    <a href='/table'>TYT</a>
+
+    <!--{{#each s}}
+        <p>{{this.id_s}} {{this.lname}} {{this.group_name}} {{this.name_m}}</p>
+    {{/each}}-->
+
+    <div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+            {{#each header}}
+                <th>{{this.head_name}}</th>
+            {{/each}}
+            </tr>
+        </thead>
+        <tbody>
+            {{#if s}}
+            {{#each s}}
+                <tr>
+                    <td>{{id.s}}</td>
+                    <td>{{lname}}</td>
+                    <td>{{fname}}</td>
+                    <td>{{mname}}</td>
+                    <td>{{group_name}}</td>
+                    <td>{{name_m}}</td>
+                </tr>>
+            {{/each}}
+            {{/if}}
+
+            {{#if m}}
+            {{#each m}}
+                <tr>
+                    <td>{{name_m}}</td>
+                    <td>{{name_be}}</td>
+                    <td>{{e_left}}</td>
+                    <td>{{power_be}}</td>
+                    <td>{{e_right}}</td>
+                </tr>>
+            {{/each}}
+            {{/if}}
+
+            {{#if ea}}
+            {{#each ea}}
+                <tr>
+                    <td>{{name_e}}</td>
+                    <td>{{name_ea}}</td>
+                </tr>>
+            {{/each}}
+            {{/if}}
+        </tbody>
+    </table>
+
+    <!--СДЕЛАТЬ граф в столбце сущности в строках сущности матрица 1 если связаны, 0 если не связаны-->
+</body>
+</html>

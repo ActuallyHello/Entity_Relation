@@ -6,15 +6,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import model.Entity;
 import model.Model;
 import model.Student;
 import model.TableOutput;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class QueryController {
@@ -272,11 +278,22 @@ public class QueryController {
 
     public void bFind(ActionEvent event) {
 
-
         //if (chbParametr.getValue() == "Студент") {
         //    student_manager = new Student_Manager();
         //    model_manager = new Model_Manager();
         //    //Model model = student_manager.getByKey();
         //}
+    }
+
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
+
+    public void btnBackToMainPage (ActionEvent event) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("/view/mainView.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 }

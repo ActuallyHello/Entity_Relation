@@ -52,5 +52,6 @@
       <Button fx:id="btnAddStudent" layoutX="387.0" layoutY="263.0" mnemonicParsing="false" onAction="#bAddStudent" text="Добавить студента" />
       <Button fx:id="btnAddModel" layoutX="201.0" layoutY="194.0" mnemonicParsing="false" onAction="#bAddModel" text="Добавить модель" />
       <Button layoutX="21.0" layoutY="562.0" mnemonicParsing="false" onAction="#bAccept" text="Добавить модель" />
+      <Button layoutX="153.0" layoutY="562.0" mnemonicParsing="false" onAction="#btnBackToMainPage" text="Назад" />
    </children>
 </AnchorPane>
