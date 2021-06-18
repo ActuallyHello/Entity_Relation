@@ -1,12 +1,26 @@
 class ViewEntity {
 
-    constructor(id_e, entity, id_ea, attribute) {
+    constructor(id_e, entity, id_ea, attribute, id_m, model) {
         this.id_e = id_e;
         this.entity = entity;
         this.id_ea = id_ea;
         this.attribute = attribute;
+        //this.id_m = id_m;
+        //this.model = model;
     }
 
+    // set IdM(id_m) {
+    //     this.id_m = id_m;
+    // }
+    // get IdM() {
+    //     return this.id_m;
+    // }
+    // set vModel(model) {
+    //     this.model = model;
+    // }
+    // set vModel(model) {
+    //     return this.model;
+    // }
     set vEntity(entity) {
         this.entity = entity;
     }

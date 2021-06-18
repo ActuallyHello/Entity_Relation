@@ -14,15 +14,16 @@ class FunctionDAO {
         await db.query(`CALL addentity($1);`, [entity]);
         const check = await db.query("SELECT name_e FROM entity WHERE id_e=(SELECT MAX(id_e) FROM entity);");
         const {name_e} = check.rows[0];
+        console.log(name_e);
         if (name_e == entity) console.log("Добавление прошло успешно");
         else console.log("Ошибка при добавлении");
     }
 
     async addAttribute(identity, attribute) {
         await db.query(`CALL addattribute($1, $2);`, [attribute, identity]);
-        const check = await db.query("SELECT name_e FROM entity WHERE id_e=(SELECT MAX(id_e) FROM entity);");
-        const {name_e} = check.rows[0];
-        if (name_e == entity) console.log("Добавление прошло успешно");
+        const check = await db.query("SELECT name_ea FROM entity_attribute WHERE id_ea=(SELECT MAX(id_ea) FROM entity_attribute);");
+        const {name_ea} = check.rows[0];
+        if (name_ea == attribute) console.log("Добавление прошло успешно");
         else console.log("Ошибка при добавлении");
     }
 
@@ -30,20 +31,22 @@ class FunctionDAO {
         await db.query(`CALL addnewmodel($1, $2);`, [name_model, id_student]);
         const check = await db.query("SELECT name_m FROM model WHERE id_m = (SELECT MAX(id_m) FROM model);");
         const {name_m} = check.rows[0];
-        if (name_e == name_model) console.log("Добавление прошло успешно");
+        if (name_m == name_model) console.log("Добавление прошло успешно");
         else console.log("Ошибка при добавлении");
     }
 
-    async addNewStudent(id_s, f, l, m, group_name) {
-        console.log(id_s+f+l+m+group_name);
-        await db.query(`CALL addnewstudent($1, $2, $3, $4, $5);`, [id_s, f, l, m, group_name]);
-        const check = await db.query("SELECT lname FROM student WHERE id_s = (SELECT MAX(id_s) FROM student);");
-        const {lname} = check.rows[0];
-        if (lname == l) console.log("Добавление прошло успешно");
+    async addNewStudent(id_stud, f, l, m, group_name) {
+        await db.query(`CALL addnewstudent($1, $2, $3, $4, $5);`, [id_stud, f, l, m, group_name]);
+        const check = await db.query("SELECT id_s FROM student WHERE id_s = (SELECT MAX(id_s) FROM student);");
+        const {id_s} = check.rows[0];
+        console.log(id_stud);
+        console.log(id_s);
+        if (id_s == id_stud) console.log("Добавление прошло успешно");
         else console.log("Ошибка при добавлении");
     }
 
     async addNewRelation(relation, left_id, power_be, right_id, id_m) {
+        console.log(relation + left_id + power_be + right_id + id_m);
         await db.query(`CALL addnewrelation($1, $2, $3, $4, $5)`, [relation, left_id, power_be, right_id, id_m]);
         const check = await db.query("SELECT id_e_left, id_e_right FROM between_entity WHERE id_be = (SELECT MAX(id_be) FROM between_entity);");
         const {id_e_left, id_e_right} = check.rows[0];
@@ -67,11 +70,13 @@ class FunctionDAO {
         else console.log("Ошибка при добавлении");
     }
 
-    async updateStudent(id_stud, fname, lname, mname, group_name) {
-        await db.query(`CALL updatestudent($1, $2, $3, $4, $5)`, [id_stud, fname, lname, mname, group_name]);
-        const check = await db.query(`SELECT id_s, name_group FROM student WHERE id_s = $1;`, [id_stud]);
-        const {id_s, name_group} = check.rows[0];
-        if (id_s == id_stud && name_group == group_name) console.log("Добавление прошло успешно");
+    async updateStudent(id_stud, f, l, m, group_name) {
+        await db.query(`CALL updatestudent($1, $2, $3, $4, $5)`, [id_stud, f, l, m, group_name]);
+        const check = await db.query(`SELECT id_s, fname, lname, mname, name_group FROM student WHERE id_s = $1;`, [id_stud]);
+        const {id_s, fname, lname, mname, name_group} = check.rows[0];
+        console.log(id_stud, f, l, m, group_name);
+        console.log(id_s, fname, lname, mname, name_group);
+        if (id_s == id_stud || f == fname || l == lname || m == mname || group_name == name_group) console.log("Добавление прошло успешно");
         else console.log("Ошибка при добавлении");
     
     }
@@ -87,7 +92,7 @@ class FunctionDAO {
 
     async updateRelation(id_relation, name_relation, power_relation, id_left, id_right, id_model) {
         await db.query(`CALL updaterelation($1, $2, $3, $4, $5, $6);`, [id_relation, name_relation, power_relation, id_left, id_right, id_model]);
-        const check = await db.query(`SELECT name_be FROM between_entity WHERE id_be = %1;`, [id_realtion]);
+        const check = await db.query(`SELECT name_be FROM between_entity WHERE id_be = $1;`, [id_relation]);
         const {name_be} = check.rows[0];
         if (name_relation == name_be) console.log("Добавление прошло успешно");
         else console.log("Ошибка при добавлении");

@@ -9,7 +9,19 @@ class ViewModelDAO {
         let arr_viewModels = [];
         for (let i = 0; i < viewModels.rows.length; i++) {
             const {id_model, model, id_relation, relation, left_entity, power_relation, right_entity} = viewModels.rows[i];
-            let viewModel = ViewModel(id_model, model, id_relation, relation, left_entity, power_relation, right_entity);
+            let viewModel = new ViewModel(id_model, model, id_relation, relation, left_entity, power_relation, right_entity);
+            arr_viewModels[i] = viewModel;          
+        }
+        return arr_viewModels;
+    }
+
+    async getByModel(name_model) {
+        const viewModels = await db.query(`SELECT id_model, model, id_relation, relation, left_entity, power_relation, right_entity FROM view_model_relation WHERE model = $1;`, [name_model]);
+
+        let arr_viewModels = [];
+        for (let i = 0; i < viewModels.rows.length; i++) {
+            const {id_model, model, id_relation, relation, left_entity, power_relation, right_entity} = viewModels.rows[i];
+            let viewModel = new ViewModel(id_model, model, id_relation, relation, left_entity, power_relation, right_entity);
             arr_viewModels[i] = viewModel;          
         }
         return arr_viewModels;

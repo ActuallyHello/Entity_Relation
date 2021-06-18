@@ -1,96 +1,194 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-    <form action="/relation" method="POST">
-        <label for="select_act"> Выберите действие:</label>
-        <select name="act" id="select_act">
-            <option value="add">Добавить связь</option>
-            <option value="edit">Редактировать связь</option>
-            <option value="delete">Удалить связь</option>
-        </select>
+<style>
+    .block {
+    display: none;
+}
 
-        {{#if add}}
-            <input id="relation" name="name_relation" placeholder="Название связи">
+.block.active {
+    display: block;
+}
+</style>
+
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        
+      </div>
+
+            <label for="select_act"> Выберите действие:</label>
+            <select name="select_act" id="select_act">                
+                  <option value="add" selected>Добавить</option>
+                  <option value="edit">Редактировать</option>
+                  <option value="delete">Удалить</option>
+            </select>
+
+
+<div id="add_block" class="block active">
+    <h2>Добавление связь</h2>
+            <form action="/relation" method="POST">
             
-            {{#if e}}
-            <br>
-            <label for="select_right"> Выберите правую сущность:</label>
+            <input id="name_relation" name="add_relation" placeholder="Название связи">                        
             
-            <select name="relation" id="select_right">
+            <label for="select_entity"> Выберите левую сущность:</label>
+            <select name="add_e_left" id="select_entity_left">
+                {{#if e}}
                 {{#each e}}
-                <option value="{{this.id_e}}">{{this.name_e}}</option>
+                <option value="{{this.id_entity}}">{{this.name_entity}}</option>
                 {{/each}}
+                {{/if}}
             </select>
-            {{/if}}
-
-            <br>
-            <label for="select_student"> Выберите левую сущность:</label>
             
-            <select name="student" id="select_student">
-                <option value="1_1"> 1-1 </option>
-                <option value="1_N"> 1-N </option>
-                <option value="N_1"> N-1 </option>
-                <option value="N_N"> N-N </option>
+            <label for="select_entity"> Выберите мощность связи:</label>
+            <select name="add_power" id="select_power">
+                <option value="1-1">1-1</option>
+                <option value="1-N">1-N</option>                
+                <option value="N-1">N-1</option>
+                <option value="N-N">N-N</option>
             </select>
-
-
-            {{#if e}}
-            <br>
-            <label for="select_right"> Выберите правую сущность:</label>
             
-            <select name="relation" id="select_right">
+            <label for="select_entity"> Выберите правую сущность:</label>
+            <select name="add_e_right" id="select_entity_right">
+                {{#if e}}
                 {{#each e}}
-                <option value="{{this.id_e}}">{{this.name_e}}</option>
+                <option value="{{this.id_entity}}">{{this.name_entity}}</option>
                 {{/each}}
+                {{/if}}
             </select>
-            {{/if}}
-
-            <br>
             
-            {{#if m}}
-            <br>
+            
             <label for="select_model"> Выберите модель:</label>
-            
-            <select name="relation" id="select_model">
+            <select name="add_m" id="select_model">
+                {{#if m}}
                 {{#each m}}
                 <option value="{{this.id_m}}">{{this.name_m}}</option>
                 {{/each}}
+                {{/if}}
             </select>
-            {{/if}}
-
-            <button>OK</button>
-            {{/if}}
-
-        {{#if edit}}
-            <!-- ВСТАВИТЬ ИЗ VIEW -->
-            {{#if be}}
-            <br>
-            <label for="select_model"> Выберите модель:</label>
             
-            <select name="relation" id="select_model">
-                {{#each be}}
-                <option value="{{this.id_be}}">{{this.name_be}} {{}}</option>
+            <button>OK</button>        
+            </form>      
+</div>
+
+<div id='edit_block' class="block">
+    <h2>Редактирование связи</h2>
+            <form action="/relation" method="POST">
+            
+            <label for="select_relation"> Выберите связь:</label>
+            <select name="edit_be" id="select_relation">
+                {{#if r}}
+                {{#each r}}
+                <option value="{{this.id_be}}">{{this.name_m}} {{this.name_be}} {{e_left}} {{power_be}} {{e_right}} {{model}}</option>
                 {{/each}}
+                {{/if}}
             </select>
-            {{/if}}
 
+            <BR>
+            <input id="name_relation" name="edit_relation" placeholder="Название связи">                        
+            
+            <label for="select_entity"> Выберите левую сущность:</label>
+            <select name="edit_e_left" id="select_entity_left">
+                {{#if e}}
+                {{#each e}}
+                <option value="{{this.id_entity}}">{{this.name_entity}}</option>
+                {{/each}}
+                {{/if}}
+            </select>
+            
+            <label for="select_entity"> Выберите мощность связи:</label>
+            <select name="edit_power" id="select_power">
+                <option value="1-1">1-1</option>
+                <option value="1-N">1-N</option>                
+                <option value="N-1">N-1</option>
+                <option value="N-N">N-N</option>
+            </select>
+            
+            <label for="select_entity"> Выберите правую сущность:</label>
+            <select name="edit_e_right" id="select_entity_right">
+                {{#if e}}
+                {{#each e}}
+                <option value="{{this.id_entity}}">{{this.name_entity}}</option>
+                {{/each}}
+                {{/if}}
+            </select>
+            
+            
+            <label for="select_model"> Выберите модель:</label>
+            <select name="edit_m" id="select_model">
+                {{#if m}}
+                {{#each m}}
+                <option value="{{this.id_m}}">{{this.name_m}}</option>
+                {{/each}}
+                {{/if}}
+            </select>
+            
             <button>OK</button>
             
-        {{/if}}
+            </form>
+    
+</div>
+
+<div id='delete_block' class="block">
+
+        <h2>Удаление связи</h2>
+            <form action="/relation" method="POST">
+            
+            <label for="select_relation"> Выберите связь:</label>
+            <select name="delete_be" id="select_relation">
+                {{#if r}}
+                {{#each r}}
+                <option value="{{this.id_be}}">{{this.name_m}} {{this.name_be}} {{e_left}} {{power_be}} {{e_right}} {{model}}</option>
+                {{/each}}
+                {{/if}}
+            </select>
+
+            
+            <button>OK</button>        
+            </form>
+</div>
+
+<div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>Модель</th>
+              <th>Название связи</th>
+              <th>Левая связь</td>
+              <th>Мощность связи</td>
+              <th>Правая связь</td>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each r}}
+            <tr>
+              <td>{{name_m}}</td>
+              <td>{{name_be}}</td>
+              <td>{{e_left}}</td>
+              <td>{{power_be}}</td>
+              <td>{{e_right}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+  
+    <script src="/docs/5.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script><script src="dashboard.js"></script>
+
+    <script>
+       
+        $("#select_act").change(() => {
+            let val = $("#select_act").val();
+            $(".block").removeClass("active");
+            $(`#${val}_block`).addClass("active");
+            //if (val == "add") {
+            //    $.get("./entity").done((data) => {})  
+                
+            //}
+        });
 
 
-        {{#if delete}}
-        
-        {{/if}}
-        
-    </form>
-
-</body>
-</html>
+    </script>

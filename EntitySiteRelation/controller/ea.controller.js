@@ -46,15 +46,28 @@ class EAController {
             delete_ea = true;
             console.log("NE ALOOOO");
         }
-        res.render("entity_attribute", {jopa: jopa, add_e: add_e, add_ea: add_ea, edit_e: edit_e, edit_ea: edit_ea, delete_e: delete_e, delete_ea: delete_ea});
+        res.render("add_entity", {add_e: add_e, add_ea: add_ea, edit_e: edit_e, edit_ea: edit_ea, delete_e: delete_e, delete_ea: delete_ea});
     }
 
+    // async GetSets(req, res) {
+    //     let entities = await EntityDAO.getAll();
+    //     let add_e = false; let add_ea = false; let edit_e = false; let jopa = false;
+    //     let edit_ea = false; let delete_e = false; let delete_ea = false;
+        
+    //     res.render('entity_attribute', {add_e: add_e, add_ea: add_ea, edit_e: edit_e, edit_ea: edit_ea, delete_e: delete_e, delete_ea: delete_ea, e: null, ea: null});
+    //     //const students = await StudentDAO.getAll();
+    //     //res.send(req.body.act + " " + req.body.model + " " + req.body.students + " " + req.body.entity);
+    //     //const ModelDAO = await ModelDAO.getAll();
+    //     //const EntityDAO = await EntityDAO.getAll();
+    // }
+
+    
     async GetSets(req, res) {
         let entities = await EntityDAO.getAll();
         let add_e = false; let add_ea = false; let edit_e = false; let jopa = false;
         let edit_ea = false; let delete_e = false; let delete_ea = false;
         
-        res.render('entity_attribute', {jopa: jopa, add_e: add_e, add_ea: add_ea, edit_e: edit_e, edit_ea: edit_ea, delete_e: delete_e, delete_ea: delete_ea, e: null, ea: null});
+        res.render('add_entity', {add_e: add_e, add_ea: add_ea, edit_e: edit_e, edit_ea: edit_ea, delete_e: delete_e, delete_ea: delete_ea, e: null, ea: null});
         //const students = await StudentDAO.getAll();
         //res.send(req.body.act + " " + req.body.model + " " + req.body.students + " " + req.body.entity);
         //const ModelDAO = await ModelDAO.getAll();

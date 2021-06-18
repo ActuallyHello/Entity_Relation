@@ -22,14 +22,10 @@
 
 
 <div id="add_block" class="block active">
-    <h2>Добавление студента</h2>
-            <form action="/student" method="POST">
+    <h2>Добавление сущности</h2>
+            <form action="/entity" method="POST">
             
-            <input id="name_stud" name="add_s" placeholder="Зачетка">
-            <input id="name_l" name="add_l" placeholder="Фамилия">
-            <input id="name_f" name="add_f" placeholder="Имя">
-            <input id="name_m" name="add_m" placeholder="Отчество">
-            <input id="name_g" name="add_g" placeholder="Группа">
+            <input id="name_entity" name="add_entity" placeholder="Сущность">
             <button>OK</button>        
             </form>
     
@@ -37,24 +33,19 @@
 </div>
 
 <div id='edit_block' class="block">
-    <h2>Редактирование записи о студенте</h2>
-            <form action="/student" method="POST">
+    <h2>Редактирование сущности</h2>
+            <form action="/entity" method="POST">
             
-            <label for="select_student"> Выберите сущность:</label>
-            <select name="edit_old_s" id="select_student">
-                {{#if s}}
-                {{#each s}}
-                <option value="{{this.id_s}}">{{id_s}} {{fname}} {{group_name}}</option>
+            <label for="select_entity"> Выберите сущность:</label>
+            <select name="edit_e" id="select_entity">
+                {{#if e}}
+                {{#each e}}
+                <option value="{{this.id_entity}}">{{this.name_entity}}</option>
                 {{/each}}
                 {{/if}}
             </select>
-            <br>
-            <!--<input id="name_stud" name="edit_s" placeholder="Зачетка">-->
-            <input id="name_l" name="edit_l" placeholder="Фамилия">
-            <input id="name_f" name="edit_f" placeholder="Имя">
-            <input id="name_m" name="edit_m" placeholder="Отчество">
-            <input id="name_g" name="edit_g" placeholder="Группа">
-
+            
+            <input id="name_entity" name="edit_entity" placeholder="Сущность">
             <button>OK</button>        
             </form>
     
@@ -62,14 +53,14 @@
 
 <div id='delete_block' class="block">
 
-        <h2>Удаление записи о студенте</h2>
-            <form action="/student" method="POST">
+        <h2>Удаление сущности</h2>
+            <form action="/entity" method="POST">
             
-            <label for="select_student"> Выберите сущность:</label>
-            <select name="delete_s" id="select_student">
-                {{#if s}}
-                {{#each s}}
-                <option value="{{this.id_s}}">{{id_s}} {{fname}} {{group_name}}</option>
+            <label for="select_entity"> Выберите сущность:</label>
+            <select name="delete_e" id="select_entity">
+                {{#if e}}
+                {{#each e}}
+                <option value="{{this.id_entity}}">{{this.name_entity}}</option>
                 {{/each}}
                 {{/if}}
             </select>
@@ -82,17 +73,15 @@
         <table class="table table-striped table-sm">
           <thead>
             <tr>
-              <th>Зачетка</th>
-              <th>ФИО</th>
-              <th>Группа</th>
+              <th>id</th>
+              <th>Название сущности</th>
             </tr>
           </thead>
           <tbody>
-            {{#each s}}
+            {{#each e}}
             <tr>
-              <td>{{id_s}}</td>
-              <td>{{lname}} {{fname}} {{mname}}</td>
-              <td>{{group_name}}</td>
+              <td>{{id_entity}}</td>
+              <td>{{name_entity}}</td>
             </tr>
             {{/each}}
           </tbody>
